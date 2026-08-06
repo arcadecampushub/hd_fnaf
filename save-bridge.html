@@ -38,10 +38,16 @@
   ];
 
   /* Vercel gives every deployment its own hostname, so match the project
-     rather than listing them. */
+     rather than listing them.
+   *
+   * Both patterns are anchored and neither allows a dot inside the wildcard
+   * part. An earlier version ended in [a-z.]+ to mean "any TLD", which also
+   * matched dots — so arcadecampushub.online.evil.com satisfied it, and any
+   * attacker who registered that could read every save on this origin.
+   * A wildcard that spans a dot spans a domain boundary; it must never. */
   var ALLOWED_PATTERNS = [
     /^https:\/\/[a-z0-9-]+\.vercel\.app$/i,
-    /^https:\/\/[a-z0-9-]*arcadecampushub[a-z0-9-]*\.[a-z.]+$/i
+    /^https:\/\/([a-z0-9-]+\.)?arcadecampushub\.online$/i
   ];
 
   function permitted(origin) {
